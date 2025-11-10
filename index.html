@@ -22,11 +22,12 @@
     /* 🎬 Video nền động */
     #bgVideo {
       position: fixed;
-      top: 0;
-      left: 0;
-      min-width: 100%;
-      min-height: 100%;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
+      transform: translate(-50%, -50%);
       z-index: -1;
       filter: brightness(0.6);
     }
@@ -121,20 +122,10 @@
 
     /* 📱 Responsive cho điện thoại */
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.3em;
-      }
-      button, .option-btn {
-        width: 90%;
-        font-size: 0.9em;
-      }
-      textarea {
-        width: 90%;
-        font-size: 0.9em;
-      }
-      .result-img {
-        width: 140px;
-      }
+      h1 { font-size: 1.3em; }
+      button, .option-btn { width: 90%; font-size: 0.9em; }
+      textarea { width: 90%; font-size: 0.9em; }
+      .result-img { width: 140px; }
     }
   </style>
 </head>
@@ -144,6 +135,9 @@
   <video autoplay muted loop playsinline id="bgVideo">
     <source src="videos/background.mp4" type="video/mp4">
   </video>
+
+  <!-- 🎵 Nhạc nền riêng -->
+  <audio id="bgMusic" src="sounds/background.mp3" loop preload="auto"></audio>
 
   <!-- 🔊 Nút bật tiếng -->
   <button id="unmuteBtn">🔊 Bật tiếng</button>
@@ -158,29 +152,29 @@
   <audio id="clickSound" src="sounds/click.mp3" preload="auto"></audio>
 
   <script>
-    const video = document.getElementById("bgVideo");
+    const bgMusic = document.getElementById("bgMusic");
     const unmuteBtn = document.getElementById("unmuteBtn");
     const clickSound = document.getElementById("clickSound");
 
-    // 🎵 Cho phép phát tiếng sau khi người dùng nhấn nút
+    // ✅ Khi bấm nút bật tiếng
     unmuteBtn.addEventListener("click", () => {
-      video.muted = false;
-      video.play();
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch(() => {});
       unmuteBtn.style.display = "none";
     });
 
-    // 🎵 Kích hoạt âm thanh click
+    // 🎵 Âm thanh click
     function playClickSound() {
       clickSound.currentTime = 0;
       clickSound.play().catch(() => {});
     }
     document.addEventListener("click", playClickSound);
 
-    // Cho phép âm thanh hoạt động trên mobile (cần một chạm đầu tiên)
+    // Cho phép âm thanh hoạt động trên iPhone (chạm lần đầu)
     document.addEventListener("touchstart", () => {
-      clickSound.play().then(() => {
-        clickSound.pause();
-        clickSound.currentTime = 0;
+      bgMusic.play().then(() => {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
       }).catch(()=>{});
     }, { once: true });
 
